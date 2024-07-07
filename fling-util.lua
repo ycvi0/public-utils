@@ -1,18 +1,6 @@
---Credits to original script owner, i just modified it and turned it into an accessable library, making it easy to within every script.
+--Credits to original script owner, i just modified it and turned it into an accessable library, making it easy to within every script. --Updated
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
-
-local GetPlayer = function(Name)
-    for _,x in next, Players:GetPlayers() do
-        if x.Name == Name then
-            return x
-        end
-    end
-end
-
-local Message = function(_Title, _Text, Time)
-    game:GetService("StarterGui"):SetCore("SendNotification", {Title = _Title, Text = _Text, Duration = Time})
-end
 
 local SkidFling = function(TargetPlayer)
     local Character = Player.Character
@@ -46,9 +34,7 @@ local SkidFling = function(TargetPlayer)
         if RootPart.Velocity.Magnitude < 50 then
             getgenv().OldPos = RootPart.CFrame
         end
-        if THumanoid and THumanoid.Sit then
-            return Message("Error Occurred", "Targeting is sitting", 5) -- u can remove dis part if u want lol
-        end
+        
         if THead then
             workspace.CurrentCamera.CameraSubject = THead
         elseif not THead and Handle then
@@ -153,8 +139,6 @@ local SkidFling = function(TargetPlayer)
             SFBasePart(THead)
         elseif not TRootPart and not THead and Accessory and Handle then
             SFBasePart(Handle)
-        else
-            return Message("Error Occurred", "Target is missing everything", 5)
         end
         
         BV:Destroy()
@@ -173,20 +157,16 @@ local SkidFling = function(TargetPlayer)
             task.wait()
         until (RootPart.Position - getgenv().OldPos.p).Magnitude < 25
         workspace.FallenPartsDestroyHeight = getgenv().FPDH
-    else
-        return Message("Error Occurred", "Random error", 5)
     end
 end
 
 local util = {}
 
 function util:fling(Target)
-    if GetPlayer(Target) and GetPlayer(Target) ~= Player then
-        local TPlayer = GetPlayer(Target)
+        local TPlayer = game.Players[Target]
         if TPlayer then
             SkidFling(TPlayer)
         end
-    end
 end
 
 return util
