@@ -1,5 +1,5 @@
 local library = {}
-
+--Update XD
 function library:main(startingStatus)
 	local main = {}
 	
@@ -13,7 +13,7 @@ function library:main(startingStatus)
 	local ActualStatus = Instance.new("TextLabel")
 	
 	HUBGUI.Name = "HUBGUI"
-	HUBGUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	HUBGUI.Parent = game.CoreGui
 	HUBGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	MainFrame.Name = "MainFrame"
