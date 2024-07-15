@@ -107,6 +107,9 @@ function library:main(startingStatus)
 		ServerHop.Visible = visible
 	end
 
+	function main:setCallBack(x)
+		ServerHop.MouseButton1Click:Connect(x)
+	end
 	function main:addPlayer(playerName)
 		local PlayerTemplate1 = Instance.new("TextLabel")
 		local UICorner_2 = Instance.new("UICorner")
