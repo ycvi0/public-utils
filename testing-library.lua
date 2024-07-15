@@ -11,6 +11,7 @@ function library:main(startingStatus)
 	local Title = Instance.new("TextLabel")
 	local Status = Instance.new("TextLabel")
 	local ActualStatus = Instance.new("TextLabel")
+	local UIStroke = Instance.new("UIStroke", Title)
 	
 	HUBGUI.Name = "HUBGUI"
 	HUBGUI.Parent = game.CoreGui
