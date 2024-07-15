@@ -80,7 +80,7 @@ function library:main(startingStatus)
 	ActualStatus.Font = Enum.Font.GothamMedium
 	ActualStatus.Text = startingStatus or "Found Server"
 	ActualStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ActualStatus.TextSize = 17.000
+	ActualStatus.TextSize = 14.000
 	
 	function main:updateStatus(status)
 		ActualStatus.Text = status
