@@ -1,8 +1,7 @@
-local library = {}
---Update XD
+local library = {} -- v2.5
 function library:main(startingStatus)
 	local main = {}
-	
+
 	local HUBGUI = Instance.new("ScreenGui")
 	local MainFrame = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
@@ -11,8 +10,9 @@ function library:main(startingStatus)
 	local Title = Instance.new("TextLabel")
 	local Status = Instance.new("TextLabel")
 	local ActualStatus = Instance.new("TextLabel")
-	local UIStroke = Instance.new("UIStroke", Title)
-	
+	local ServerHop = Instance.new("TextButton")
+	local UICorner_3 = Instance.new("UICorner")
+
 	HUBGUI.Name = "HUBGUI"
 	HUBGUI.Parent = game.CoreGui
 	HUBGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -38,7 +38,7 @@ function library:main(startingStatus)
 	Container.Size = UDim2.new(0, 307, 0, 137)
 	Container.CanvasSize = UDim2.new(0, 0, 0, 250)
 	Container.ScrollBarThickness = 2
-	
+
 	UIListLayout.Parent = Container
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 2)
@@ -83,14 +83,34 @@ function library:main(startingStatus)
 	ActualStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
 	ActualStatus.TextSize = 14.000
 	
+	ServerHop.Name = "ServerHop"
+	ServerHop.Parent = MainFrame
+	ServerHop.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ServerHop.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ServerHop.BorderSizePixel = 0
+	ServerHop.Position = UDim2.new(0, 0, 1.05181348, 0)
+	ServerHop.Size = UDim2.new(0, 307, 0, 16)
+	ServerHop.Font = Enum.Font.SourceSans
+	ServerHop.Text = "Server Hop (Click Me)"
+	ServerHop.TextColor3 = Color3.fromRGB(0, 0, 0)
+	ServerHop.TextSize = 14.000
+	ServerHop.Visible = false
+
+	UICorner_3.CornerRadius = UDim.new(0, 6)
+	UICorner_3.Parent = ServerHop
+	
 	function main:updateStatus(status)
 		ActualStatus.Text = status
 	end
 	
+	function main:showServerHop(visible)
+		ServerHop.Visible = visible
+	end
+
 	function main:addPlayer(playerName)
 		local PlayerTemplate1 = Instance.new("TextLabel")
 		local UICorner_2 = Instance.new("UICorner")
-		
+
 		PlayerTemplate1.Name = playerName
 		PlayerTemplate1.Parent = Container
 		PlayerTemplate1.AnchorPoint = Vector2.new(0, 1)
@@ -108,7 +128,7 @@ function library:main(startingStatus)
 		UICorner_2.Parent = PlayerTemplate1
 
 	end
-	
+
 	return main
 end
 
