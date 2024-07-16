@@ -1,4 +1,4 @@
---final update
+---fixed server hop button
 local lib = {}
 
 function lib:Main(startingStatus)
@@ -192,6 +192,10 @@ function lib:Main(startingStatus)
 			UIStroke_2.Thickness = 0.6
 			UIStroke_2.Parent = PlayerExample
 		end
+	end
+	
+	function main:SetCallBack(x)
+		ServerHop.MouseButton1Click:Connect(x)
 	end
 	
 	return main
