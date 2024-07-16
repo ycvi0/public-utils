@@ -1,4 +1,4 @@
---fix pls
+--final update
 local lib = {}
 
 function lib:Main(startingStatus)
@@ -105,7 +105,7 @@ function lib:Main(startingStatus)
 	Status.Position = UDim2.new(0, 0, 0, 24)
 	Status.Size = UDim2.new(1, 0, 0, 22)
 	Status.Font = Enum.Font.Gotham
-	Status.Text = '<font color="#03ffa3">Status: </font>! ' .. startingStatus
+	Status.Text = '<font color="#03ffa3">Status: </font> ' .. startingStatus
 	Status.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Status.TextSize = 16.000
 	Status.RichText = true
@@ -158,7 +158,7 @@ function lib:Main(startingStatus)
 	UIStroke.Parent = Container
 	
 	function main:UpdateStatus(status)
-		Status.Text = '<font color="#03ffa3">Status: </font>! ' .. status
+		Status.Text = '<font color="#03ffa3">Status: </font> ' .. status
 	end
 	
 	function main:AddPlayer(playerName)
