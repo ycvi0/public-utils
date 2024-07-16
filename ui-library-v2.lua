@@ -1,3 +1,4 @@
+--fix pls
 local lib = {}
 
 function lib:Main(startingStatus)
@@ -32,7 +33,7 @@ function lib:Main(startingStatus)
 	MainFrame.Size = UDim2.new(0, 400, 0, 280)
 	
 	local UIS = game:GetService('UserInputService')
-	local frame = Main
+	local frame = MainFrame
 	local dragToggle = nil
 	local dragStart = nil
 	local startPos = nil
