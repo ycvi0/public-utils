@@ -18,7 +18,7 @@ function library:Main(startingStatus)
 	local ServerHopCorner = Instance.new("UICorner")
 	
 	Main.Name = "Main"
-	Main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	Main.Parent = game.CoreGui
 
 	MainFrame.Name = "MainFrame"
 	MainFrame.Parent = Main
@@ -103,6 +103,7 @@ function library:Main(startingStatus)
 	Status.Text = '<b>Status: <b> ' .. startingStatus
 	Status.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Status.TextSize = 17.000
+	Status.RichText = true
 
 	Container.Name = "Container"
 	Container.Parent = MainFrame
