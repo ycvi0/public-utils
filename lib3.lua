@@ -100,7 +100,7 @@ function library:Main(startingStatus)
 	Status.Position = UDim2.new(0, 0, 0.0828571394, 0)
 	Status.Size = UDim2.new(1, 0, 0, 16)
 	Status.Font = Enum.Font.Gotham
-	Status.Text = '<b>Status: <b> ' .. startingStatus
+	Status.Text = '<b>Status: </b> ' .. startingStatus
 	Status.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Status.TextSize = 17.000
 	Status.RichText = true
@@ -145,7 +145,7 @@ function library:Main(startingStatus)
 	end
 	
 	function main:UpdateStatus(status)
-		Status.Text = '<b>Status: <b> ' .. status
+		Status.Text = '<b>Status: </b> ' .. status
 	end
 	
 	function main:AddPlayer(playerName)
