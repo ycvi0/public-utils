@@ -49,14 +49,11 @@ local function TPReturner(placeId)
     end
 end
 
-local module = {}
 
-function module:Teleport(placeId)
     while wait() do
         pcall(function()
-            TPReturner(placeId)
+            TPReturner(getgenv().placeId)
         end)
     end
-end
 
-return module
+
