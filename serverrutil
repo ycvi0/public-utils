@@ -1,4 +1,4 @@
--- added proxy
+-- removed proxy
 local AllIDs = {} 
 local foundAnything = ""
 local actualHour = os.date("!*t").hour
