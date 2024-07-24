@@ -17,9 +17,6 @@ local function TPReturner(placeId)
     end
     
     local servers = Site.data
-    table.sort(servers, function(a, b)
-        return tonumber(a.ping) < tonumber(b.ping)
-    end)
     
     for _, server in ipairs(servers) do
         local ID = tostring(server.id)
