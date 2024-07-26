@@ -1,15 +1,46 @@
--- removed proxy
-local AllIDs = {} 
+local AllIDs = {}
 local foundAnything = ""
-local actualHour = os.date("!*t").hour
 local Deleted = false
 local S_T = game:GetService("TeleportService")
 local S_H = game:GetService("HttpService")
-local Http = game:GetService("HttpService")
 local Players = game:GetService("Players")
+local TimeLimit = 30 * 60  -- 30 minutes in seconds
+local TimestampFile = "server-timestamps.json"
+
+-- Load server timestamps from file
+local function loadTimestamps()
+    local timestamps = {}
+    if isfile(TimestampFile) then
+        local data = readfile(TimestampFile)
+        timestamps = S_H:JSONDecode(data)
+    end
+    return timestamps
+end
+
+-- Save server timestamps to file
+local function saveTimestamps(timestamps)
+    local data = S_H:JSONEncode(timestamps)
+    writefile(TimestampFile, data)
+end
+
+-- Check if a server was joined recently
+local function wasJoinedRecently(serverID, timestamps)
+    local currentTime = os.time()
+    local lastJoined = timestamps[serverID]
+    if lastJoined then
+        return (currentTime - lastJoined) < TimeLimit
+    end
+    return false
+end
+
+-- Update the timestamp for a server
+local function updateTimestamp(serverID, timestamps)
+    timestamps[serverID] = os.time()
+    saveTimestamps(timestamps)
+end
 
 local function TPReturner(placeId)
-    local Site;
+    local Site
     if foundAnything == "" then
         Site = S_H:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. placeId .. '/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true'))
     else
@@ -17,10 +48,11 @@ local function TPReturner(placeId)
     end
     
     local servers = Site.data
+    local timestamps = loadTimestamps()
     
     for _, server in ipairs(servers) do
         local ID = tostring(server.id)
-        if tonumber(server.playing) <= 11 then
+        if tonumber(server.playing) <= 11 and not wasJoinedRecently(ID, timestamps) then
             local Possible = true
             for _, Existing in pairs(AllIDs) do
                 if ID == tostring(Existing) then
@@ -37,6 +69,7 @@ local function TPReturner(placeId)
                     S_T:TeleportToPlaceInstance(placeId, ID, Players.LocalPlayer)
                 end)
                 wait(3)
+                updateTimestamp(ID, timestamps)
             end
         end
     end
@@ -46,11 +79,8 @@ local function TPReturner(placeId)
     end
 end
 
-
-    while wait() do
-        pcall(function()
-            TPReturner(getgenv().placeId)
-        end)
-    end
-
-
+while wait() do
+    pcall(function()
+        TPReturner(getgenv().placeId)
+    end)
+end
