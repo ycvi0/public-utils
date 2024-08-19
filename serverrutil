@@ -1,4 +1,4 @@
-local lib = {}
+
 local PlaceID = game.PlaceId
 local AllIDs = {}
 local foundAnything = ""
@@ -62,15 +62,15 @@ function TPReturner()
     end
 end
 
-function lib:Teleport()
-    while wait() do
-        pcall(function()
+
+while wait() do
+    pcall(function()
+        TPReturner()
+        if foundAnything ~= "" then
             TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
-    end
+        end
+    end)
 end
 
-return lib
+
+
