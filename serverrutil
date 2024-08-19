@@ -2,7 +2,7 @@
 	script has been modified to be compatible with desired scripts.
 ]]
 -- Made By key
-local PlaceID = game.PlaceId
+local PlaceID = getgenv().placeId
 local AllIDs = {}
 local foundAnything = ""
 local actualHour = os.date("!*t").hour
