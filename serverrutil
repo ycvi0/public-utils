@@ -1,7 +1,42 @@
+Skip to content
+Navigation Menu
+ycvi0
+/
+public-utils
+
+Type / to search
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Files
+Go to file
+t
+fling-util.lua
+libv3.lua
+serverrutil
+testing-library.lua
+ui-library-v2.lua
+Breadcrumbspublic-utils
+/serverrutil
+Latest commit
+ 
+History
+File metadata and controls
+
+Code
+
+Blame
+79 lines (72 loc) · 2.5 KB
 --[[
 	script has been modified to be compatible with desired scripts.
 ]]
--- Made By JamJam
+-- Made By key
 local PlaceID = game.PlaceId
 local AllIDs = {}
 local foundAnything = ""
@@ -20,9 +55,9 @@ end
 function TPReturner()
     local Site
     if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&limit=100'))
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&excludeFullGames=true&limit=100'))
     else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&limit=100&cursor=' .. foundAnything))
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&excludeFullGames=true&limit=100&cursor=' .. foundAnything))
     end
 
     local ID = ""
@@ -77,3 +112,14 @@ function Teleport()
 end
 
 Teleport()
+Footer
+© 2024 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact
+Manage cookies
+Do not share my personal information
