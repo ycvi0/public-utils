@@ -1,4 +1,7 @@
-
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+-- Made By JamJam
 local PlaceID = game.PlaceId
 local AllIDs = {}
 local foundAnything = ""
@@ -17,9 +20,9 @@ end
 function TPReturner()
     local Site
     if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&limit=100'))
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
     else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&limit=100&cursor=' .. foundAnything))
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
     end
 
     local ID = ""
@@ -56,21 +59,21 @@ function TPReturner()
                     wait()
                     game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
                 end)
-                wait(3)
+                wait(4)
             end
         end
     end
 end
 
-
-while wait() do
-    pcall(function()
-        TPReturner()
-        if foundAnything ~= "" then
+function Teleport()
+    while wait() do
+        pcall(function()
             TPReturner()
-        end
-    end)
+            if foundAnything ~= "" then
+                TPReturner()
+            end
+        end)
+    end
 end
 
-
-
+Teleport()
