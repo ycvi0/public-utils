@@ -1,79 +1,91 @@
---[[
-	script has been modified to be compatible with desired scripts.
-]]
+-- Optimized server hopping script for Roblox
 -- Made By key
+
 local PlaceID = getgenv().placeId
 local AllIDs = {}
 local foundAnything = ""
 local actualHour = os.date("!*t").hour
-local Deleted = false
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game.Players
+local jsonFileName = "NotSameServers.json"
 
-local File = pcall(function()
-    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
-end)
-
-if not File then
-    table.insert(AllIDs, actualHour)
-    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+-- Load existing IDs or create a new file
+local function loadIDs()
+    local success, result = pcall(function()
+        return HttpService:JSONDecode(readfile(jsonFileName))
+    end)
+    if success and type(result) == "table" then
+        AllIDs = result
+    else
+        AllIDs = {actualHour}
+        writefile(jsonFileName, HttpService:JSONEncode(AllIDs))
+    end
 end
 
-function TPReturner()
-    local Site
-    if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&excludeFullGames=true&limit=100'))
-    else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&excludeFullGames=true&limit=100&cursor=' .. foundAnything))
-    end
+-- Save IDs to file
+local function saveIDs()
+    writefile(jsonFileName, HttpService:JSONEncode(AllIDs))
+end
 
-    local ID = ""
-    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+-- Clear the file if the hour has changed
+local function clearFileIfHourChanged()
+    if tonumber(actualHour) ~= tonumber(AllIDs[1]) then
+        pcall(function()
+            delfile(jsonFileName)
+        end)
+        AllIDs = {actualHour}
+        saveIDs()
+    end
+end
+
+-- Fetch the server data from the Roblox API
+local function fetchServers(cursor)
+    local url = 'https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&excludeFullGames=true&limit=100'
+    if cursor then
+        url = url .. '&cursor=' .. cursor
+    end
+    local success, result = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet(url))
+    end)
+    return success and result or nil
+end
+
+-- Attempt to teleport to a new server
+local function tryTeleport(ID)
+    table.insert(AllIDs, ID)
+    saveIDs()
+    TeleportService:TeleportToPlaceInstance(PlaceID, ID, Players.LocalPlayer)
+    wait(5)
+end
+
+-- Main function to find and teleport to a suitable server
+local function TPReturner()
+    local Site = fetchServers(foundAnything)
+    if not Site then return end
+
+    if Site.nextPageCursor then
         foundAnything = Site.nextPageCursor
     end
 
-    local num = 0
-    for i, v in pairs(Site.data) do
-        local Possible = true
-        ID = tostring(v.id)
-        if tonumber(v.maxPlayers) > tonumber(v.playing) then
-            for _, Existing in pairs(AllIDs) do
-                if num ~= 0 then
-                    if ID == tostring(Existing) then
-                        Possible = false
-                    end
-                else
-                    if tonumber(actualHour) ~= tonumber(Existing) then
-                        local delFile = pcall(function()
-                            delfile("NotSameServers.json")
-                            AllIDs = {}
-                            table.insert(AllIDs, actualHour)
-                        end)
-                    end
-                end
-                num = num + 1
-            end
-            if Possible == true then
-                table.insert(AllIDs, ID)
-                wait()
-                pcall(function()
-                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-                    wait()
-                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
-                end)
-                wait(4)
-            end
+    clearFileIfHourChanged()
+
+    for _, server in ipairs(Site.data) do
+        local ID = tostring(server.id)
+        if tonumber(server.maxPlayers) > tonumber(server.playing) and not table.find(AllIDs, ID) then
+            tryTeleport(ID)
+            break
         end
     end
 end
 
-function Teleport()
+-- Main teleport loop
+local function Teleport()
     while wait() do
-        pcall(function()
-            TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
+        pcall(TPReturner)
     end
 end
 
+-- Load IDs and start the teleport process
+loadIDs()
 Teleport()
