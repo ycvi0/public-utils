@@ -1,4 +1,4 @@
---ahaha
+--boohoo
 
 local PlaceID = getgenv().placeId
 local AllIDs = {}
@@ -109,9 +109,7 @@ end
 
 -- Main teleport loop
 local function Teleport()
-    print("Starting teleport process...")
     while wait(2) do
-        print("Teleport loop iteration...")
         pcall(TPReturner)
     end
 end
