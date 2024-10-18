@@ -56,6 +56,7 @@ end
 local function tryTeleport(ID)
     table.insert(AllIDs, ID)
     saveIDs()
+    print("attempt tp")
     TeleportService:TeleportToPlaceInstance(PlaceID, ID, Players.LocalPlayer)
     wait(5)
 end
@@ -74,6 +75,7 @@ local function TPReturner()
     for _, server in ipairs(Site.data) do
         local ID = tostring(server.id)
         if tonumber(server.maxPlayers) > tonumber(server.playing) and not table.find(AllIDs, ID) then
+            print("server.")
             tryTeleport(ID)
             break
         end
