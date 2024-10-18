@@ -1,5 +1,4 @@
--- Optimized server hopping script for Roblox with rate-limiting and enhanced debugging
--- Made By key
+--beta
 
 local PlaceID = getgenv().placeId
 local AllIDs = {}
