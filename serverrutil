@@ -1,4 +1,4 @@
---beta
+--ahaha
 
 local PlaceID = getgenv().placeId
 local AllIDs = {}
@@ -8,8 +8,8 @@ local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 local Players = game.Players
 local jsonFileName = "NotSameServers.json"
-local retryDelay = 10 -- Initial delay for retrying failed requests
-local maxRetryDelay = 60 -- Maximum delay for retrying failed requests
+local retryDelay = 15 -- Initial delay for retrying failed requests
+local maxRetryDelay = 70 -- Maximum delay for retrying failed requests
 
 -- Load existing IDs or create a new file
 local function loadIDs()
@@ -85,7 +85,7 @@ local function TPReturner()
     if not Site then
         print("Failed to fetch servers, retrying in", retryDelay, "seconds...")
         wait(retryDelay)
-        retryDelay = math.min(retryDelay * 2, maxRetryDelay) -- Exponential backoff
+        retryDelay = math.min(retryDelay + 15, maxRetryDelay) -- Exponential backoff
         print("Retry delay increased to:", retryDelay, "seconds.")
         return
     end
