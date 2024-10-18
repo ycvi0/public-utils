@@ -48,6 +48,7 @@ local function fetchServers(cursor)
     local success, result = pcall(function()
         return HttpService:JSONDecode(game:HttpGet(url))
     end)
+    if not success then print(result) else print(success) end
     return success and result or nil
 end
 
