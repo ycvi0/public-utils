@@ -73,7 +73,7 @@ local function tryTeleport(ID)
     saveIDs()
     TeleportService:TeleportToPlaceInstance(PlaceID, ID, Players.LocalPlayer)
     print("Teleport attempt made, waiting before retrying...")
-    wait(5)
+    wait(2)
 end
 
 -- Main function to find and teleport to a suitable server
@@ -81,16 +81,9 @@ local function TPReturner()
     print("Running TPReturner function...")
     local Site = fetchServers(foundAnything)
     if not Site then
-        
-        wait(15)
-        print("Retry delay increased to:", retryDelay, "seconds.")
+        wait(10)
         return
     end
-
-    -- Reset retry delay on success
-    retryDelay = 10
-    print("Server fetch successful, retry delay reset to 10 seconds.")
-
     if Site.nextPageCursor then
         foundAnything = Site.nextPageCursor
         print("Next page cursor set to:", foundAnything)
@@ -106,7 +99,6 @@ local function TPReturner()
             print("Suitable server found:", ID)
             tryTeleport(ID)
             serverFound = true
-            break
         end
     end
 
@@ -118,7 +110,7 @@ end
 -- Main teleport loop
 local function Teleport()
     print("Starting teleport process...")
-    while wait(3) do
+    while wait(2) do
         print("Teleport loop iteration...")
         pcall(TPReturner)
     end
