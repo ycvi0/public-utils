@@ -1,4 +1,4 @@
--- Optimized server hopping script for Roblox
+-- Optimized server hopping script for Roblox with rate-limiting
 -- Made By key
 
 local PlaceID = getgenv().placeId
@@ -9,6 +9,8 @@ local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 local Players = game.Players
 local jsonFileName = "NotSameServers.json"
+local retryDelay = 10 -- Initial delay for retrying failed requests
+local maxRetryDelay = 60 -- Maximum delay for retrying failed requests
 
 -- Load existing IDs or create a new file
 local function loadIDs()
@@ -48,15 +50,17 @@ local function fetchServers(cursor)
     local success, result = pcall(function()
         return HttpService:JSONDecode(game:HttpGet(url))
     end)
-    print(success .. " " .. result)
-    return success and result or nil
+    if not success then
+        warn("Failed to fetch servers: " .. tostring(result))
+        return nil
+    end
+    return result
 end
 
 -- Attempt to teleport to a new server
 local function tryTeleport(ID)
     table.insert(AllIDs, ID)
     saveIDs()
-    print("attempt tp")
     TeleportService:TeleportToPlaceInstance(PlaceID, ID, Players.LocalPlayer)
     wait(5)
 end
@@ -64,7 +68,14 @@ end
 -- Main function to find and teleport to a suitable server
 local function TPReturner()
     local Site = fetchServers(foundAnything)
-    if not Site then return end
+    if not Site then
+        wait(retryDelay)
+        retryDelay = math.min(retryDelay * 2, maxRetryDelay) -- Exponential backoff
+        return
+    end
+
+    -- Reset retry delay on success
+    retryDelay = 10
 
     if Site.nextPageCursor then
         foundAnything = Site.nextPageCursor
@@ -75,7 +86,6 @@ local function TPReturner()
     for _, server in ipairs(Site.data) do
         local ID = tostring(server.id)
         if tonumber(server.maxPlayers) > tonumber(server.playing) and not table.find(AllIDs, ID) then
-            print("server.")
             tryTeleport(ID)
             break
         end
@@ -84,7 +94,7 @@ end
 
 -- Main teleport loop
 local function Teleport()
-    while wait() do
+    while wait(3) do
         pcall(TPReturner)
     end
 end
