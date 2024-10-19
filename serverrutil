@@ -1,4 +1,4 @@
---boohoo
+--ahae
 
 local PlaceID = getgenv().placeId
 local AllIDs = {}
@@ -71,6 +71,7 @@ local function tryTeleport(ID)
     print("Attempting to teleport to server ID:", ID)
     table.insert(AllIDs, ID)
     saveIDs()
+    game:GetService("TeleportService"):TeleportCancel()
     TeleportService:TeleportToPlaceInstance(PlaceID, ID, Players.LocalPlayer)
     print("Teleport attempt made, waiting before retrying...")
     wait(2)
