@@ -1,5 +1,4 @@
---ahae
-
+--done? tf
 local PlaceID = getgenv().placeId
 local AllIDs = {}
 local foundAnything = ""
@@ -8,6 +7,7 @@ local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 local Players = game.Players
 local jsonFileName = "NotSameServers.json"
+local lastRequestTime = 0 -- Track last request time to handle rate limit
 
 -- Load existing IDs or create a new file
 local function loadIDs()
@@ -51,17 +51,30 @@ end
 -- Fetch the server data from the Roblox API
 local function fetchServers(cursor)
     print("Fetching servers with cursor:", cursor or "None")
+    
+    -- Rate limit handling
+    local currentTime = tick() -- Current time in seconds
+    if currentTime - lastRequestTime < 1 then
+        warn("Request too soon. Skipping to avoid rate limit.")
+        return nil
+    end
+    
+    lastRequestTime = currentTime -- Update the last request time
     local url = 'https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&excludeFullGames=true&limit=100'
+    
     if cursor then
         url = url .. '&cursor=' .. cursor
     end
+    
     local success, result = pcall(function()
         return HttpService:JSONDecode(game:HttpGet(url))
     end)
+    
     if not success then
         warn("Failed to fetch servers: " .. tostring(result))
         return nil
     end
+    
     print("Fetched servers successfully. Number of servers retrieved:", #result.data)
     return result
 end
@@ -73,18 +86,17 @@ local function tryTeleport(ID)
     saveIDs()
     game:GetService("TeleportService"):TeleportCancel()
     TeleportService:TeleportToPlaceInstance(PlaceID, ID, Players.LocalPlayer)
-    print("Teleport attempt made, waiting before retrying...")
-    wait(2)
 end
 
 -- Main function to find and teleport to a suitable server
 local function TPReturner()
     print("Running TPReturner function...")
     local Site = fetchServers(foundAnything)
+    
     if not Site then
-        wait(10)
         return
     end
+    
     if Site.nextPageCursor then
         foundAnything = Site.nextPageCursor
         print("Next page cursor set to:", foundAnything)
@@ -96,10 +108,12 @@ local function TPReturner()
     for _, server in ipairs(Site.data) do
         local ID = tostring(server.id)
         print("Checking server ID:", ID, "Players:", server.playing, "/", server.maxPlayers)
+        
         if tonumber(server.maxPlayers) > tonumber(server.playing) and not table.find(AllIDs, ID) then
             print("Suitable server found:", ID)
             tryTeleport(ID)
             serverFound = true
+            break
         end
     end
 
@@ -110,8 +124,11 @@ end
 
 -- Main teleport loop
 local function Teleport()
-    while wait(2) do
-        pcall(TPReturner)
+    while true do
+        local success, errorMessage = pcall(TPReturner)
+        if not success then
+            warn("Error occurred during TPReturner: " .. tostring(errorMessage))
+        end
     end
 end
 
